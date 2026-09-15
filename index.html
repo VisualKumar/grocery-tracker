@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grocery run estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E6EBEE;
+    --panel: #F7F9FA;
+    --ink: #17212B;
+    --muted: #5C6B78;
+    --line: #CBD4DA;
+    --blue: #1D4F91;
+    --tag: #F3C623;
+    --tag-ink: #17212B;
+    --on: #DCE8F7;
+    --red: #B3261E;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10161C; --panel: #18212A; --ink: #E7EDF2; --muted: #93A3B1;
+      --line: #2C3945; --blue: #7FB0F0; --on: #1E3350; --red: #F08A82;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161C; --panel: #18212A; --ink: #E7EDF2; --muted: #93A3B1;
+    --line: #2C3945; --blue: #7FB0F0; --on: #1E3350; --red: #F08A82;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px; line-height: 1.45;
+    padding-bottom: 120px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 16px 0; }
+  h1 {
+    font-stretch: 62%; font-weight: 900; font-size: clamp(2.6rem, 9vw, 4.2rem);
+    line-height: .92; margin: 0 0 10px; letter-spacing: -.01em;
+  }
+  .intro { color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  button {
+    font: inherit; cursor: pointer; border-radius: 6px;
+    border: 1.5px solid var(--ink); background: transparent; color: var(--ink);
+    padding: 6px 12px; font-weight: 600;
+  }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  button.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.primary { color: #0B1520; } }
+
+  section { margin-bottom: 22px; }
+  h2 {
+    font-stretch: 75%; font-weight: 800; font-size: 1.35rem; margin: 0 0 6px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  h2 small { font-weight: 500; font-size: .9rem; color: var(--muted); font-stretch: 100%; }
+  .list { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .row {
+    display: grid; grid-template-columns: 28px 1fr auto auto; gap: 12px;
+    align-items: center; padding: 11px 14px; border-top: 1px solid var(--line);
+    cursor: pointer; user-select: none;
+  }
+  .row:first-child { border-top: 0; }
+  .row.on { background: var(--on); }
+  .box {
+    width: 22px; height: 22px; border: 2px solid var(--muted); border-radius: 5px;
+    display: grid; place-items: center;
+  }
+  .row.on .box { background: var(--blue); border-color: var(--blue); }
+  .row.on .box::after { content: ""; width: 6px; height: 11px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg) translate(-1px,-1px); }
+  .name { font-weight: 650; }
+  .code { display: block; color: var(--muted); font-size: .8rem; font-weight: 400; }
+  .price { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: .85rem; }
+  .price input {
+    width: 64px; font: inherit; font-size: .95rem; color: var(--ink); text-align: right;
+    background: transparent; border: 1px solid transparent; border-bottom-color: var(--line);
+    padding: 2px 4px;
+  }
+  .price input.lb { width: 48px; }
+  .qty { display: flex; align-items: center; gap: 4px; }
+  .qty button { padding: 0; width: 28px; height: 28px; line-height: 1; border-width: 1px; }
+  .qty span { min-width: 18px; text-align: center; font-variant-numeric: tabular-nums; }
+  .line { min-width: 70px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .row:not(.on) .qty, .row:not(.on) .line { visibility: hidden; }
+  .del { border: 0; color: var(--red); padding: 2px 4px; font-size: .8rem; font-weight: 500; }
+
+  .add { display: grid; grid-template-columns: 1fr 90px 130px auto; gap: 8px; margin-top: 8px; }
+  .add input, .add select {
+    font: inherit; padding: 8px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink); min-width: 0;
+  }
+
+  .tag {
+    position: fixed; left: 0; right: 0; bottom: 0; background: var(--tag); color: var(--tag-ink);
+    border-top: 3px solid var(--tag-ink);
+  }
+  .tag .inner {
+    max-width: 760px; margin: 0 auto; padding: 12px 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .tag .count { font-weight: 600; }
+  .tag .count small { display: block; font-weight: 400; font-size: .85rem; }
+  .total {
+    font-stretch: 62%; font-weight: 900; font-size: clamp(2.4rem, 10vw, 3.4rem);
+    line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .total sup { font-size: .5em; vertical-align: .7em; }
+
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 26px 1fr auto; row-gap: 8px; }
+    .row .qty { grid-column: 2; }
+    .row .line { grid-column: 3; }
+    .add { grid-template-columns: 1fr 1fr; }
+  }
+  .filters { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filters button { border-radius: 999px; border-width: 1px; }
+  .filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .store {
+    border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; margin-right: 6px;
+    font-size: .75rem; font-weight: 700; color: var(--ink);
+  }
+  .store.Costco { border-color: #C8102E; color: #C8102E; }
+  .store.Walmart { border-color: var(--blue); color: var(--blue); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .store.Costco { color: #F28B96; border-color: #F28B96; } }
+  :root[data-theme="dark"] .store.Costco { color: #F28B96; border-color: #F28B96; }
+  .est { font-style: italic; }
+  .store::after { content: " ▾"; font-size: .7em; }
+  .swap { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .swap button { font-size: .8rem; font-weight: 500; padding: 4px 8px; border-width: 1px; text-align: left; }
+  .swap button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .swap b { display: block; font-weight: 700; }
+  .sync { font-size: .85rem; color: var(--muted); margin: -14px 0 20px; }
+  .sync::before { content: "● "; color: var(--muted); }
+  .sync.ok::before { color: #2E8B57; }
+  .tag .inner { flex-wrap: wrap; }
+  #logBtn { background: var(--tag-ink); color: var(--tag); border-color: var(--tag-ink); }
+  .panel { background: var(--panel); border: 2px solid var(--ink); border-radius: 10px; padding: 16px; margin-bottom: 22px; }
+  .panel h2 { margin-bottom: 10px; }
+  .panel label { display: block; font-size: .9rem; color: var(--muted); margin-bottom: 10px; }
+  .panel input[type=date], .panel input[type=number] {
+    display: block; font: inherit; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin-top: 4px; width: 100%; max-width: 220px;
+  }
+  .storeline { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: end; padding: 10px 0; border-top: 1px solid var(--line); }
+  .storeline b { font-size: 1.05rem; }
+  .row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .check { display: flex !important; gap: 8px; align-items: center; color: var(--ink) !important; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .stat b { display: block; font-stretch: 70%; font-weight: 800; font-size: 1.7rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .85rem; color: var(--muted); }
+  .chart { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 16px; overflow-x: auto; }
+  .chart h3, .hist h3 { margin: 0 0 8px; font-size: 1rem; }
+  .chart svg { display: block; width: 100%; min-width: 320px; height: auto; }
+  .legend { display: flex; gap: 14px; font-size: .8rem; color: var(--muted); margin-top: 6px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  .catbar { display: grid; grid-template-columns: 120px 1fr 70px; gap: 8px; align-items: center; font-size: .9rem; margin: 4px 0; }
+  .catbar div { height: 10px; background: var(--blue); border-radius: 3px; }
+  .catbar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .trips { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .trips th, .trips td { text-align: left; padding: 7px 6px; border-top: 1px solid var(--line); }
+  .trips th { color: var(--muted); font-weight: 600; border-top: 0; }
+  .trips td.n, .trips th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .empty { color: var(--muted); }
+  .move { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: -8px 0 20px; color: var(--muted); font-size: .9rem; }
+  .move button { font-size: .85rem; padding: 4px 10px; border-width: 1px; }
+  h2 button.fold { border: 0; padding: 0; font: inherit; font-weight: 800; display: flex; gap: 8px; align-items: baseline; }
+  .split { font-size: .82rem; font-weight: 400; display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Grocery run estimator</h1>
+  <p class="intro">Tap the items you need and the total builds at the bottom. Prices marked "Est." are rough guesses, so type in the real price after your next trip. Tap a store label to switch where you buy an item. Each item remembers its price at every store you set.</p>
+  <p class="sync" id="sync">Saved in this browser</p>
+  <div class="filters" id="filters"></div>
+  <div class="tools">
+    <button id="all">Select everything shown</button>
+    <button id="none">Clear selection</button>
+    <button id="reset">Restore default stores and prices</button>
+    <button id="unhide" hidden>Show removed items</button>
+  </div>
+  <div class="move" id="move"></div>
+  <div id="logPanel"></div>
+  <div id="groups"></div>
+
+  <section>
+    <h2>Add an item</h2>
+    <div class="add">
+      <input id="newName" placeholder="Item name">
+      <input id="newPrice" type="number" step="0.01" min="0" placeholder="Price">
+      <select id="newCat"></select>
+      <button class="primary" id="addBtn">Add item</button>
+    </div>
+  </section>
+
+  <section id="history">
+    <h2>Spending history</h2>
+    <div id="histBody"></div>
+  </section>
+</div>
+
+<div class="tag" aria-live="polite">
+  <div class="inner">
+    <div class="count" id="count"></div>
+    <button id="logBtn" hidden>Log this trip</button>
+    <div class="total" id="total"></div>
+  </div>
+</div>
+
+<script>
+const CATS = ["Household", "Dairy", "Proteins", "Produce", "Carbs", "Frozen", "Pantry staples", "Occasional"];
+const FOLDED_BY_DEFAULT = ["Occasional"];
+const STORES = ["Costco", "Walmart", "Other"];
+// Receipt items (real Costco prices)
+const R = (id, code, name, cat, price, extra = {}) => ({ id, code, name, cat, store: "Costco", price, ...extra });
+// Everyday items with estimated prices
+let n = 0;
+const E = (name, cat, store, price, extra = {}) => ({ id: "e" + (++n), name, cat, store, price, est: true, ...extra });
+
+const DEFAULTS = [
+  // Household
+  E("Fiber gummies", 0, "Walmart", 11.97),
+  E("Candles", 0, "Walmart", 5.00),
+  E("Sponges", 0, "Walmart", 5.97),
+  E("Dish soap", 0, "Walmart", 4.97),
+  R("870735", "KS ADLT MULT", "Kirkland adult multivitamin", 0, 11.49),
+  // Dairy
+  E("Oat milk", 1, "Walmart", 4.97),
+  R("1048072", "GREEK YOGURT", "Kirkland low-fat Greek yogurt tub", 1, 7.49),
+  R("1271446", "OIKOS ZERO", "Oikos zero-sugar Greek yogurt cups", 1, 13.99),
+  R("427381", "KS ORG EGGS", "Kirkland organic eggs", 1, 7.99),
+  R("1068083", "ORG FR EGGS", "Organic free-range eggs", 1, 8.29),
+  E("Low-fat cream cheese", 1, "Walmart", 2.97),
+  E("Low-fat sour cream", 1, "Walmart", 2.47),
+  E("Cottage cheese", 1, "Walmart", 3.97),
+  R("26802", "CRUMBLD FETA", "Crumbled feta", 1, 6.79),
+  // Proteins
+  R("18010", "LAMB RB RCK", "Lamb rib rack (lamb chops)", 2, null, { perLb: 16.99, lb: 1.8 }),
+  E("Boneless skinless chicken breast", 2, "Costco", null, { perLb: 3.49, lb: 6 }),
+  R("22967", "ORGNC BS THG", "Organic boneless skinless chicken thighs", 2, null, { perLb: 5.99, lb: 5, qty: 2 }),
+  E("Ground turkey, 99% lean (1 lb)", 2, "Walmart", 6.97),
+  R("221177", "KS SOCKEYE", "Kirkland wild sockeye salmon, frozen bag", 2, 42.99),
+  R("1139689", "KS TILAPIA", "Kirkland tilapia fillets, frozen bag", 2, 19.99),
+  // Produce
+  E("Green beans", 3, "Walmart", 2.47),
+  E("Green onions", 3, "Walmart", 0.98),
+  E("Lettuce", 3, "Walmart", 2.97),
+  E("Salsa", 3, "Walmart", 3.47),
+  E("Broccoli", 3, "Walmart", 2.47),
+  E("Asparagus", 3, "Walmart", 3.47),
+  E("Cuties (3 lb bag)", 3, "Walmart", 5.47),
+  E("Bananas", 3, "Walmart", 1.60),
+  E("Cucumber", 3, "Walmart", 0.78),
+  E("Brussels sprouts", 3, "Walmart", 2.97),
+  E("Limes", 3, "Walmart", 2.97),
+  R("96716", "ORG SPINACH", "Organic spinach", 3, 4.69),
+  R("60357", "MIXED PEPPER", "Bell peppers, 6-pack", 3, 6.99),
+  R("21020", "VINE TOMATO", "Tomatoes on the vine", 3, 7.49),
+  E("Avocados (bag)", 3, "Walmart", 3.97),
+  R("1285362", "KS GUAC SNGL", "Kirkland guacamole single cups", 3, 13.89),
+  E("Red onions", 3, "Walmart", 2.97),
+  E("Potatoes (5 lb bag)", 3, "Walmart", 3.97),
+  E("Corn", 3, "Walmart", 2.00),
+  E("Asian pear", 3, "Walmart", 1.50, { note: "Not every week" }),
+  // Carbs
+  R("96128", "POTATO BREAD", "Martin's potato bread", 4, 6.89),
+  R("669434", "CAPE COD RF", "Cape Cod reduced fat chips", 4, 7.49, { note: "Last trip had a $2.00 coupon" }),
+  R("1407686", "LC SOFT TACO", "Mission low-carb soft taco tortillas (70 cal each)", 4, 6.99),
+  // Frozen
+  E("Chicken tenders or nuggets", 5, "Walmart", 9.97),
+  E("Fries", 5, "Walmart", 4.97),
+  // Pantry staples
+  E("Pickles", 6, "Walmart", 2.97),
+  E("Yellow chili peppers", 6, "Walmart", 2.47),
+  E("Jalapeños", 6, "Walmart", 1.97),
+  E("Instant coffee", 6, "Walmart", 7.97),
+  E("Canned pineapple or pineapple juice", 6, "Walmart", 1.67),
+  E("Vegan refried beans", 6, "Walmart", 1.97),
+  // Occasional
+  E("Oyster sauce", 7, "Walmart", 3.47),
+  E("Kelp noodles", 7, "Other", 3.99),
+  E("Dangmyeon (Korean glass noodles)", 7, "Other", 5.99),
+  E("Mirin", 7, "Walmart", 3.97),
+  E("Chili oil", 7, "Other", 5.99),
+  E("Honey", 7, "Walmart", 5.97),
+  E("Milk", 7, "Walmart", 3.47),
+  E("Buttermilk", 7, "Walmart", 2.47),
+  E("Heavy whipping cream", 7, "Walmart", 4.47),
+  E("Coarse potato starch", 7, "Other", 4.99),
+  E("Shaoxing wine", 7, "Other", 3.99),
+];
+const KEY = "grocery-estimator-v2";
+let state = loadState();
+let items = state.items;
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && Array.isArray(s.items)) {
+      s.items = s.items.filter(it => it.custom || DEFAULTS.some(x => x.id === it.id)).map(it => {
+        const d = DEFAULTS.find(x => x.id === it.id);
+        return d ? { ...it, name: d.name, code: d.code, cat: d.cat, note: d.note } : it;
+      });
+      DEFAULTS.forEach(d => { if (!s.items.some(i => i.id === d.id)) s.items.push(fresh1(d)); });
+      return { filter: "All", folded: FOLDED_BY_DEFAULT, ...s };
+    }
+  } catch (e) {}
+  return { items: fresh(), filter: "All", folded: FOLDED_BY_DEFAULT.slice() };
+}
+function fresh1(d) { return { ...d, on: false, qty: d.qty || 1 }; }
+function fresh() { return DEFAULTS.map(fresh1); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+const unit = it => it.perLb != null ? it.perLb * it.lb : it.price;
+const lineTotal = it => unit(it) * it.qty;
+const money = x => x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const shown = it => !it.hidden && (state.filter === "All" || it.store === state.filter);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function render() {
+  const f = document.getElementById("filters");
+  f.innerHTML = ["All", ...STORES].map(x => `<button aria-pressed="${state.filter === x}" data-f="${x}">${x}</button>`).join("");
+  f.querySelectorAll("button").forEach(b => b.onclick = () => { state.filter = b.dataset.f; update(); });
+
+  const root = document.getElementById("groups");
+  root.innerHTML = "";
+  CATS.forEach((cat, ci) => {
+    const group = items.filter(i => i.cat === ci && shown(i));
+    if (!group.length) return;
+    const folded = state.folded.includes(cat);
+    const sub = group.filter(i => i.on).reduce((s, i) => s + lineTotal(i), 0);
+    const sec = document.createElement("section");
+    sec.innerHTML = `<h2><button class="fold" aria-expanded="${!folded}">${cat} <small>${folded ? "Show " + group.length : "Hide"}</small></button><small>${sub ? "$" + money(sub) : ""}</small></h2>`;
+    sec.querySelector(".fold").onclick = () => {
+      state.folded = folded ? state.folded.filter(c => c !== cat) : [...state.folded, cat];
+      update();
+    };
+    if (!folded) {
+      const list = document.createElement("div");
+      list.className = "list";
+      group.forEach(it => list.appendChild(rowFor(it)));
+      sec.appendChild(list);
+    }
+    root.appendChild(sec);
+  });
+
+  renderMove();
+  document.getElementById("logBtn").hidden = !items.some(i => i.on && !i.hidden);
+  const removed = items.filter(i => i.hidden).length;
+  const ub = document.getElementById("unhide");
+  ub.hidden = !removed;
+  ub.textContent = `Show removed items (${removed})`;
+
+  const picked = items.filter(i => i.on && !i.hidden);
+  const inView = picked.filter(shown);
+  const total = inView.reduce((s, i) => s + lineTotal(i), 0);
+  document.getElementById("total").innerHTML = `<sup>$</sup>${money(total)}`;
+  const count = inView.reduce((s, i) => s + i.qty, 0);
+  const split = STORES.map(st => {
+    const t = picked.filter(i => i.store === st).reduce((s, i) => s + lineTotal(i), 0);
+    return t ? `${st} $${money(t)}` : "";
+  }).filter(Boolean).join(", ");
+  const label = state.filter === "All" ? "" : ` at ${state.filter}`;
+  document.getElementById("count").innerHTML = inView.length
+    ? `${count} item${count === 1 ? "" : "s"}${label}<small>${state.filter === "All" && split ? split : "Estimate before tax and coupons"}</small>`
+    : `Nothing selected${label}<small>Tap an item to start</small>`;
+}
+
+function rowFor(it) {
+  const row = document.createElement("div");
+  row.className = "row" + (it.on ? " on" : "");
+  row.setAttribute("role", "checkbox");
+  row.setAttribute("aria-checked", it.on);
+  row.tabIndex = 0;
+  const priceHtml = it.perLb != null
+    ? `<input class="lb" type="number" step="0.1" min="0" value="${it.lb}" data-f="lb" aria-label="Pounds"> lb × $<input type="number" step="0.01" min="0" value="${it.perLb}" data-f="perLb" aria-label="Price per pound">`
+    : `$<input type="number" step="0.01" min="0" value="${it.price}" data-f="price" aria-label="Price">`;
+  const bits = [];
+  if (it.code) bits.push(`#${it.id} ${it.code}`);
+  if (it.est) bits.push(`<span class="est">Est.</span>`);
+  if (it.custom) bits.push("Added by you");
+  if (it.note) bits.push(esc(it.note));
+  row.innerHTML = `
+    <div class="box"></div>
+    <div class="name">${esc(it.name)}
+      <span class="code"><button class="store ${it.store}" data-store aria-expanded="${!!it.open}" title="Change store">${it.store}</button>${bits.join(", ")} <button class="del" data-del>Remove</button></span>
+      <div class="price">${priceHtml}</div>${it.open ? swapHtml(it) : ""}</div>
+    <div class="qty"><button data-q="-1" aria-label="Fewer">−</button><span>${it.qty}</span><button data-q="1" aria-label="More">+</button></div>
+    <div class="line">$${money(lineTotal(it))}</div>`;
+  row.addEventListener("click", e => {
+    if (e.target.closest("input")) return;
+    const q = e.target.closest("[data-q]");
+    if (q) { it.qty = Math.max(1, it.qty + Number(q.dataset.q)); return update(); }
+    if (e.target.closest("[data-store]")) { it.open = !it.open; return update(); }
+    const sw = e.target.closest("[data-to]");
+    if (sw) { switchStore(it, sw.dataset.to); it.open = false; return update(); }
+    if (e.target.closest("[data-del]")) {
+      if (it.custom) items.splice(items.indexOf(it), 1);
+      else { it.hidden = true; it.on = false; it.qty = 1; }
+      return update();
+    }
+    it.on = !it.on; update();
+  });
+  row.addEventListener("keydown", e => {
+    if ((e.key === " " || e.key === "Enter") && e.target === row) { e.preventDefault(); it.on = !it.on; update(); }
+  });
+  row.querySelectorAll("input").forEach(inp => {
+    inp.addEventListener("change", () => {
+      const v = parseFloat(inp.value);
+      if (!isNaN(v) && v >= 0) { it[inp.dataset.f] = v; if (inp.dataset.f !== "lb") it.est = false; }
+      update();
+    });
+  });
+  return row;
+}
+function update() { state.updatedAt = Date.now(); save(); render(); queueCloud(); }
+
+// ---- Cloud sync: one document holds the whole tracker ----
+let cloud = null, cloudTimer = null, writing = false, again = false, pending = false, lastSent = 0;
+const setSync = (txt, ok) => { const el = document.getElementById("sync"); el.textContent = txt; el.className = "sync" + (ok ? " ok" : ""); };
+const clean = o => JSON.parse(JSON.stringify(o, (k, v) => k === "open" ? undefined : v));
+function queueCloud() {
+  if (!cloud) return;
+  pending = true;
+  setSync("Saving…", false);
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(pushCloud, 700);
+}
+async function pushCloud() {
+  if (writing) { again = true; return; }
+  writing = true;
+  try {
+    const body = clean(state);
+    lastSent = body.updatedAt;
+    await cloud.set(body);
+    setSync("Synced to your account", true);
+  } catch (e) {
+    setSync("Couldn't sync, changes are saved on this device", false);
+  }
+  writing = false;
+  if (again) { again = false; return pushCloud(); }
+  pending = false;
+}
+(async () => {
+  if (!window.claude || !window.claude.use) return;
+  const db = await window.claude.use("db");
+  if (!db) return;
+  connectTrips(db);
+  const ref = db.doc("tracker/state");
+  try {
+    const first = await ref.get();
+    cloud = ref;
+    const remote = first.exists ? first.data() : null;
+    if (remote && (remote.updatedAt || 0) >= (state.updatedAt || 0)) adopt(remote);
+    else await pushCloud();
+    setSync("Synced to your account", true);
+    ref.onSnapshot(snap => {
+      if (!snap.exists || pending) return;
+      const d = snap.data();
+      if (d.updatedAt === lastSent || (d.updatedAt || 0) <= (state.updatedAt || 0)) return;
+      adopt(d);
+      setSync("Synced to your account", true);
+    }, () => setSync("Sync paused, changes are saved on this device", false));
+  } catch (e) {
+    setSync("Saved on this device", false);
+  }
+})();
+// ---- Trips: spending history ----
+const TKEY = "grocery-trips-v1";
+let trips = [];
+let tripsRef = null;
+let logOpen = false;
+try { trips = JSON.parse(localStorage.getItem(TKEY)) || []; } catch (e) {}
+const saveTripsLocal = () => { try { localStorage.setItem(TKEY, JSON.stringify(trips)); } catch (e) {} };
+const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
+const spent = t => t.actualTotal != null ? t.actualTotal : t.estTotal;
+
+function openLog() { logOpen = true; renderLog(); document.getElementById("logPanel").scrollIntoView({ behavior: "smooth" }); }
+function renderLog() {
+  const el = document.getElementById("logPanel");
+  if (!logOpen) { el.innerHTML = ""; return; }
+  const picked = items.filter(i => i.on && !i.hidden);
+  const byStore = STORES.map(st => ({ st, list: picked.filter(i => i.store === st) })).filter(g => g.list.length);
+  el.innerHTML = `<div class="panel">
+    <h2>Log this trip</h2>
+    <label>Date<input type="date" id="tripDate" value="${today()}"></label>
+    ${byStore.map(g => {
+      const est = g.list.reduce((s, i) => s + lineTotal(i), 0);
+      return `<div class="storeline"><div><b>${g.st}</b><br><span class="code">${g.list.reduce((s, i) => s + i.qty, 0)} items, estimated $${money(est)}</span></div>
+        <label>Actual paid, with tax<input type="number" step="0.01" min="0" data-actual="${g.st}" placeholder="Optional"></label></div>`;
+    }).join("")}
+    <label class="check"><input type="checkbox" id="tripClear" checked> Clear my selection after saving</label>
+    <div class="row-actions"><button class="primary" id="tripSave">Save trip</button><button id="tripCancel">Cancel</button></div>
+  </div>`;
+  document.getElementById("tripCancel").onclick = () => { logOpen = false; renderLog(); };
+  document.getElementById("tripSave").onclick = async () => {
+    const date = document.getElementById("tripDate").value || today();
+    const newTrips = byStore.map(g => {
+      const a = parseFloat(el.querySelector(`[data-actual="${g.st}"]`).value);
+      const lines = g.list.map(i => ({
+        itemId: i.id, name: i.name, category: CATS[i.cat], qty: i.qty,
+        unitPrice: +unit(i).toFixed(2), perLb: i.perLb ?? null, lb: i.perLb != null ? i.lb : null,
+        priceIsEstimate: !!i.est, lineTotal: +lineTotal(i).toFixed(2),
+      }));
+      return {
+        id: "t" + Date.now() + g.st, date, store: g.st,
+        estTotal: +lines.reduce((s, l) => s + l.lineTotal, 0).toFixed(2),
+        actualTotal: isNaN(a) ? null : a, itemCount: lines.reduce((s, l) => s + l.qty, 0),
+        createdAt: Date.now(), lines,
+      };
+    });
+    trips = trips.concat(newTrips);
+    saveTripsLocal();
+    if (tripsRef) for (const t of newTrips) { try { await tripsRef.doc(t.id).set(t); } catch (e) {} }
+    logOpen = false;
+    if (document.getElementById("tripClear").checked) {
+      items.forEach(i => { i.on = false; i.qty = DEFAULTS.find(d => d.id === i.id)?.qty || 1; });
+      update();
+    } else render();
+    renderLog();
+    renderTrips();
+    document.getElementById("history").scrollIntoView({ behavior: "smooth" });
+  };
+}
+
+function renderTrips() {
+  const el = document.getElementById("histBody");
+  if (!trips.length) {
+    el.innerHTML = `<p class="empty">No trips yet. Select what you bought and tap "Log this trip" to start building your history.</p>
+      ${STANDALONE ? `<div class="row-actions">${sampleButtons()}</div>` : ""}`;
+    wireSample();
+    return;
+  }
+  const sorted = trips.slice().sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
+  const month = today().slice(0, 7);
+  const thisMonth = trips.filter(t => t.date.startsWith(month));
+  const c = new Date(Date.now() - 30 * 864e5); const cutoff = `${c.getFullYear()}-${String(c.getMonth() + 1).padStart(2, "0")}-${String(c.getDate()).padStart(2, "0")}`;
+  const last30 = trips.filter(t => t.date >= cutoff).reduce((s, t) => s + spent(t), 0);
+  const withActual = trips.filter(t => t.actualTotal != null && t.estTotal > 0);
+  const gap = withActual.length ? withActual.reduce((s, t) => s + (t.actualTotal - t.estTotal) / t.estTotal, 0) / withActual.length : null;
+
+  // Monthly totals, last 6 months, stacked by store
+  const months = [];
+  const d = new Date(); d.setDate(1);
+  for (let k = 5; k >= 0; k--) { const m = new Date(d.getFullYear(), d.getMonth() - k, 1); months.push(`${m.getFullYear()}-${String(m.getMonth() + 1).padStart(2, "0")}`); }
+  const colors = { Costco: "#C8102E", Walmart: "var(--blue)", Other: "var(--muted)" };
+  const mt = months.map(m => STORES.map(st => trips.filter(t => t.date.startsWith(m) && t.store === st).reduce((s, t) => s + spent(t), 0)));
+  const max = Math.max(1, ...mt.map(a => a.reduce((x, y) => x + y, 0)));
+  const W = 600, H = 200, bw = 56, gapX = (W - 40 - bw * 6) / 5;
+  let bars = "";
+  months.forEach((m, k) => {
+    let y = H - 24; const x = 40 + k * (bw + gapX);
+    STORES.forEach((st, j) => {
+      const h = (mt[k][j] / max) * (H - 50);
+      if (h > 0) { y -= h; bars += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="${colors[st]}"><title>${st} $${money(mt[k][j])}</title></rect>`; }
+    });
+    const tot = mt[k].reduce((a, b) => a + b, 0);
+    const label = new Date(+m.slice(0, 4), +m.slice(5) - 1, 1).toLocaleString("en-US", { month: "short" });
+    bars += `<text x="${x + bw / 2}" y="${H - 6}" text-anchor="middle" font-size="12" fill="currentColor">${label}</text>`;
+    if (tot) bars += `<text x="${x + bw / 2}" y="${y - 6}" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">$${Math.round(tot)}</text>`;
+  });
+
+  // Category split this month (from line-item estimates)
+  const cat = {};
+  thisMonth.forEach(t => t.lines.forEach(l => { cat[l.category] = (cat[l.category] || 0) + l.lineTotal; }));
+  const catRows = Object.entries(cat).sort((a, b) => b[1] - a[1]);
+  const cmax = Math.max(1, ...catRows.map(r => r[1]));
+
+  el.innerHTML = `
+    <div class="stats">
+      <div class="stat"><b>$${money(thisMonth.reduce((s, t) => s + spent(t), 0))}</b><span>This month, ${thisMonth.length} trip${thisMonth.length === 1 ? "" : "s"}</span></div>
+      <div class="stat"><b>$${money(last30)}</b><span>Last 30 days</span></div>
+      <div class="stat"><b>$${money(trips.reduce((s, t) => s + spent(t), 0) / trips.length)}</b><span>Average per trip</span></div>
+      <div class="stat"><b>${gap == null ? "None yet" : (gap >= 0 ? "+" : "") + (gap * 100).toFixed(1) + "%"}</b><span>Actual vs estimate</span></div>
+    </div>
+    <div class="chart"><h3>Monthly spending</h3>
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly spending, last six months">${bars}</svg>
+      <div class="legend">${STORES.map(st => `<span><i style="background:${colors[st]}"></i>${st}</span>`).join("")}</div>
+    </div>
+    ${catRows.length ? `<div class="chart"><h3>This month by category</h3>${catRows.map(([c, v]) =>
+      `<div class="catbar"><span>${c}</span><div style="width:${(v / cmax) * 100}%"></div><span>$${money(v)}</span></div>`).join("")}</div>` : ""}
+    <div class="chart hist"><h3>Trips</h3>
+      <table class="trips"><thead><tr><th>Date</th><th>Store</th><th class="n">Items</th><th class="n">Estimated</th><th class="n">Paid</th><th></th></tr></thead>
+      <tbody>${sorted.slice(0, 15).map(t => `<tr><td>${t.date}</td><td>${t.store}</td><td class="n">${t.itemCount}</td>
+        <td class="n">$${money(t.estTotal)}</td><td class="n">${t.actualTotal != null ? "$" + money(t.actualTotal) : "–"}</td>
+        <td><button class="del" data-deltrip="${t.id}">Delete</button></td></tr>`).join("")}</tbody></table>
+      ${sorted.length > 15 ? `<p class="empty">Showing the latest 15 of ${sorted.length}. Export to see all.</p>` : ""}
+    </div>
+    <div class="row-actions" id="exportRow"></div>`;
+
+  el.querySelectorAll("[data-deltrip]").forEach(b => b.onclick = async () => {
+    if (!confirm("Delete this trip from your history?")) return;
+    const id = b.dataset.deltrip;
+    trips = trips.filter(t => t.id !== id);
+    saveTripsLocal(); renderTrips();
+    if (tripsRef) { try { await tripsRef.doc(id).delete(); } catch (e) {} }
+  });
+  setupExport();
+}
+
+const csvCell = v => { if (v == null) return ""; const s = String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+const toCsv = rows => rows.map(r => r.map(csvCell).join(",")).join("\n");
+async function setupExport() {
+  const row = document.getElementById("exportRow");
+  if (!row) return;
+  const inClaude = !!(window.claude && window.claude.use);
+  let dl = inClaude ? await window.claude.use("downloads") : null;
+  if (!dl && !inClaude) dl = { save: async ({ filename, data }) => {
+    const url = URL.createObjectURL(new Blob([data], { type: "text/csv" }));
+    const a = Object.assign(document.createElement("a"), { href: url, download: filename });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } };
+  if (!dl || !document.getElementById("exportRow")) return;
+  if (!inClaude) row.innerHTML = sampleButtons();
+  row.innerHTML += `<button id="expTrips">Export trips CSV</button><button id="expLines">Export line items CSV</button>`;
+  wireSample();
+  const sorted = () => trips.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const save = async (filename, data) => { try { await dl.save({ filename, data }); } catch (e) {} };
+  document.getElementById("expTrips").onclick = () => save(`grocery_trips_${today()}.csv`, toCsv([
+    ["trip_id", "date", "store", "item_count", "est_total", "actual_total"],
+    ...sorted().map(t => [t.id, t.date, t.store, t.itemCount, t.estTotal, t.actualTotal]),
+  ]));
+  document.getElementById("expLines").onclick = () => save(`grocery_line_items_${today()}.csv`, toCsv([
+    ["trip_id", "date", "store", "item_id", "item_name", "category", "qty", "unit_price", "price_per_lb", "lbs", "price_is_estimate", "line_total"],
+    ...sorted().flatMap(t => t.lines.map(l => [t.id, t.date, t.store, l.itemId, l.name, l.category, l.qty, l.unitPrice, l.perLb, l.lb, l.priceIsEstimate, l.lineTotal])),
+  ]));
+}
+
+// ---- Demo data for the self-hosted version (never shown inside Claude) ----
+const STANDALONE = !(window.claude && window.claude.use);
+function sampleButtons() {
+  if (!STANDALONE) return "";
+  return trips.some(t => t.sample)
+    ? `<button id="clearSample">Clear sample trips</button>`
+    : `<button class="primary" id="loadSample">Load sample trips</button>`;
+}
+function wireSample() {
+  const load = document.getElementById("loadSample");
+  const clear = document.getElementById("clearSample");
+  if (load) load.onclick = () => { trips = trips.concat(makeSampleTrips()); saveTripsLocal(); renderTrips(); };
+  if (clear) clear.onclick = () => { trips = trips.filter(t => !t.sample); saveTripsLocal(); renderTrips(); };
+}
+function makeSampleTrips() {
+  let seed = 42;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const fmt = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const out = [];
+  for (let w = 12; w >= 1; w--) {
+    const day = new Date(Date.now() - w * 7 * 864e5);
+    const plan = [["Walmart", 0.45]];
+    if (w % 2 === 0) plan.push(["Costco", 0.5]);
+    plan.forEach(([st, p], k) => {
+      const pool = DEFAULTS.filter(d => d.store === st && d.cat !== CATS.indexOf("Occasional"));
+      const lines = pool.filter(() => rand() < p).map(d => {
+        const drift = 1 + (rand() - 0.4) * 0.12; // prices wander a little week to week
+        const u = (d.perLb != null ? d.perLb * d.lb : d.price) * drift;
+        const qty = d.qty || 1;
+        return { itemId: d.id, name: d.name, category: CATS[d.cat], qty, unitPrice: +u.toFixed(2),
+          perLb: d.perLb ?? null, lb: d.perLb != null ? d.lb : null, priceIsEstimate: !!d.est, lineTotal: +(u * qty).toFixed(2) };
+      });
+      if (!lines.length) return;
+      const est = lines.reduce((s, l) => s + l.lineTotal, 0);
+      out.push({ id: `s${w}${st}`, sample: true, date: fmt(new Date(day.getTime() + k * 864e5)), store: st,
+        estTotal: +est.toFixed(2), actualTotal: +(est * (1.01 + rand() * 0.08)).toFixed(2),
+        itemCount: lines.reduce((s, l) => s + l.qty, 0), createdAt: day.getTime(), lines });
+    });
+  }
+  return out;
+}
+
+async function connectTrips(db) {
+  tripsRef = db.collection("trips");
+  try {
+    const snap = await tripsRef.get();
+    const remote = snap.docs.map(d => JSON.parse(JSON.stringify(d.data())));
+    const ids = new Set(remote.map(t => t.id));
+    for (const t of trips) if (!ids.has(t.id)) { try { await tripsRef.doc(t.id).set(t); remote.push(t); } catch (e) {} }
+    trips = remote; saveTripsLocal(); renderTrips();
+    tripsRef.onSnapshot(q => {
+      trips = q.docs.map(d => JSON.parse(JSON.stringify(d.data())));
+      saveTripsLocal(); renderTrips();
+    }, () => {});
+  } catch (e) {}
+}
+document.getElementById("logBtn").onclick = openLog;
+renderTrips();
+
+function adopt(remote) {
+  const copy = JSON.parse(JSON.stringify(remote));
+  state = { filter: "All", folded: FOLDED_BY_DEFAULT.slice(), ...copy };
+  items = state.items;
+  save();
+  render();
+}
+
+// Each item keeps a remembered price for the stores it isn't currently set to.
+function snapshot(it) { return { price: it.price, perLb: it.perLb, lb: it.lb, est: it.est }; }
+function priceAt(it, st) {
+  if (st === it.store) return { value: unit(it), est: it.est };
+  const a = it.alt && it.alt[st];
+  return a ? { value: a.perLb != null ? a.perLb * a.lb : a.price, est: a.est } : null;
+}
+function switchStore(it, st) {
+  if (st === it.store) return;
+  it.alt = it.alt || {};
+  it.alt[it.store] = snapshot(it);
+  const a = it.alt[st];
+  if (a) Object.assign(it, a);
+  else it.est = true; // no price here yet: keep the current number as a starting guess
+  delete it.alt[st];
+  it.store = st;
+}
+function swapHtml(it) {
+  return `<div class="swap">${STORES.map(st => {
+    const p = priceAt(it, st);
+    const txt = p ? `${p.est ? "Est. " : ""}$${money(p.value)}` : "No price yet";
+    return `<button data-to="${st}" aria-pressed="${st === it.store}"><b>${st}</b>${txt}</button>`;
+  }).join("")}</div>`;
+}
+function renderMove() {
+  const m = document.getElementById("move");
+  const n = items.filter(i => i.on && !i.hidden).length;
+  if (!n) { m.innerHTML = ""; return; }
+  m.innerHTML = `Move ${n} selected to ` + STORES.map(st => `<button data-move="${st}">${st}</button>`).join("");
+  m.querySelectorAll("button").forEach(b => b.onclick = () => {
+    items.forEach(i => { if (i.on && !i.hidden) switchStore(i, b.dataset.move); });
+    update();
+  });
+}
+
+document.getElementById("newCat").innerHTML = CATS.map((c, i) => `<option value="${i}">${c}</option>`).join("");
+document.getElementById("addBtn").onclick = () => {
+  const name = document.getElementById("newName").value.trim();
+  const price = parseFloat(document.getElementById("newPrice").value);
+  if (!name || isNaN(price)) { document.getElementById(name ? "newPrice" : "newName").focus(); return; }
+  const store = state.filter === "All" ? "Walmart" : state.filter;
+  items.push({ id: "c" + Date.now(), name, price, store, cat: Number(document.getElementById("newCat").value), on: true, qty: 1, custom: true });
+  document.getElementById("newName").value = ""; document.getElementById("newPrice").value = "";
+  update();
+};
+document.getElementById("all").onclick = () => { items.forEach(i => { if (shown(i)) i.on = true; }); update(); };
+document.getElementById("none").onclick = () => { items.forEach(i => { i.on = false; i.qty = DEFAULTS.find(d => d.id === i.id)?.qty || 1; }); update(); };
+document.getElementById("reset").onclick = () => {
+  const keep = new Map(items.map(i => [i.id, i]));
+  const custom = items.filter(i => i.custom);
+  items = state.items = fresh().map(d => ({ ...d, hidden: keep.get(d.id)?.hidden })).concat(custom);
+  update();
+};
+document.getElementById("unhide").onclick = () => { items.forEach(i => i.hidden = false); update(); };
+render();
+</script>
+</body>
+</html>
