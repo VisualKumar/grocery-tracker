@@ -2,7 +2,7 @@
 
 A mobile-friendly web app for planning grocery trips across Costco and Walmart, estimating the cost before I shop, and tracking what I actually spend over time.
 
-**Live demo:** https://YOUR-USERNAME.github.io/grocery-tracker/
+**Live demo:** https://visualkumar.github.io/grocery-tracker/
 Tap **Load sample trips** in Spending history to see the charts with 12 weeks of generated data.
 
 ## Why I built it
