@@ -33,8 +33,9 @@ Each logged trip is one record per store:
 | `item_count` | Total units bought |
 | `est_total` | Sum of estimated line totals, before tax |
 | `actual_total` | Amount paid including tax (optional) |
+| `is_sample` | `true` for generated demo trips, `false` for real ones |
 
-Line-item export adds `item_id`, `item_name`, `category`, `qty`, `unit_price`, `price_per_lb`, `lbs`, `price_is_estimate`, and `line_total`.
+Line-item export adds `item_id`, `item_name`, `category`, `qty`, `unit_price`, `price_per_lb`, `lbs`, `price_is_estimate`, `line_total`, and `is_sample`.
 
 ## Tech
 

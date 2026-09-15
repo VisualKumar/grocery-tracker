@@ -623,12 +623,12 @@ async function setupExport() {
   const sorted = () => trips.slice().sort((a, b) => a.date.localeCompare(b.date));
   const save = async (filename, data) => { try { await dl.save({ filename, data }); } catch (e) {} };
   document.getElementById("expTrips").onclick = () => save(`grocery_trips_${today()}.csv`, toCsv([
-    ["trip_id", "date", "store", "item_count", "est_total", "actual_total"],
-    ...sorted().map(t => [t.id, t.date, t.store, t.itemCount, t.estTotal, t.actualTotal]),
+    ["trip_id", "date", "store", "item_count", "est_total", "actual_total", "is_sample"],
+    ...sorted().map(t => [t.id, t.date, t.store, t.itemCount, t.estTotal, t.actualTotal, !!t.sample]),
   ]));
   document.getElementById("expLines").onclick = () => save(`grocery_line_items_${today()}.csv`, toCsv([
-    ["trip_id", "date", "store", "item_id", "item_name", "category", "qty", "unit_price", "price_per_lb", "lbs", "price_is_estimate", "line_total"],
-    ...sorted().flatMap(t => t.lines.map(l => [t.id, t.date, t.store, l.itemId, l.name, l.category, l.qty, l.unitPrice, l.perLb, l.lb, l.priceIsEstimate, l.lineTotal])),
+    ["trip_id", "date", "store", "item_id", "item_name", "category", "qty", "unit_price", "price_per_lb", "lbs", "price_is_estimate", "line_total", "is_sample"],
+    ...sorted().flatMap(t => t.lines.map(l => [t.id, t.date, t.store, l.itemId, l.name, l.category, l.qty, l.unitPrice, l.perLb, l.lb, l.priceIsEstimate, l.lineTotal, !!t.sample])),
   ]));
 }
 
@@ -689,6 +689,12 @@ async function connectTrips(db) {
   } catch (e) {}
 }
 document.getElementById("logBtn").onclick = openLog;
+// Outside Claude, data lives only in this browser: show green if storage works, a warning if it doesn't.
+if (STANDALONE) {
+  let ok = false;
+  try { localStorage.setItem("__t", "1"); localStorage.removeItem("__t"); ok = true; } catch (e) {}
+  setSync(ok ? "Saved in this browser" : "Not saved: this browser is blocking storage, so changes will be lost when you close the page", ok);
+}
 renderTrips();
 
 function adopt(remote) {
