@@ -1,4 +1,4 @@
-   # Real spending exports stay on my computer, not on GitHub
-   data/real/
-   # Jupyter autosave files
-   .ipynb_checkpoints/
+# Real spending exports stay on my computer, not on GitHub
+data/real/
+# Jupyter autosave files
+.ipynb_checkpoints/
