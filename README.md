@@ -46,6 +46,28 @@ Line-item export adds `item_id`, `item_name`, `category`, `qty`, `unit_price`, `
 
 Built with AI-assisted development (Claude).
 
+## Analysis
+
+`analysis/grocery_analysis.ipynb` explores the exported data with pandas: monthly spending by store, category breakdown, estimate accuracy, price changes, and which items drive spending. It currently runs on generated sample data in `data/sample/`.
+
+To run it:
+
+```bash
+pip install -r requirements.txt
+jupyter notebook analysis/grocery_analysis.ipynb
+```
+
+## Project structure
+
+```
+index.html                  The app
+vendor/                     Supabase JavaScript library, served from this site
+analysis/                   Jupyter notebooks
+data/sample/                Generated demo data (safe to share)
+data/real/                  My real exports (not committed, see .gitignore)
+requirements.txt            Python packages for the analysis
+```
+
 ## Roadmap
 
 - [ ] Exploratory analysis in pandas: spend by category and store, price changes over time, estimate accuracy

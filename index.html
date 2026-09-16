@@ -709,7 +709,11 @@ function showLocalStatus() {
 // ---- Supabase: sign-in and database sync for the self-hosted site ----
 const SUPABASE_URL = "https://trsyopyfzkujrikplcan.supabase.co";
 const SUPABASE_KEY = "sb_publishable_nzus-UUnhiHyaHJnj9n9Qw_SA-03zLH"; // public by design; row level security protects the data
-const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js";
+// Load the library from this site first; fall back to the public CDN.
+const SUPABASE_JS = [
+  "vendor/supabase-js-2.116.0.js",
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js",
+];
 var sb = null, sbUser = null;
 
 function loadScript(src) {
@@ -721,7 +725,15 @@ function loadScript(src) {
 }
 
 async function initSupabase() {
-  try { await loadScript(SUPABASE_JS); } catch (e) { return; } // offline: stay in local mode
+  for (const src of SUPABASE_JS) {
+    try { await loadScript(src); if (window.supabase) break; } catch (e) {}
+  }
+  if (!window.supabase) {
+    const el = document.getElementById("account");
+    el.hidden = false;
+    el.innerHTML = `<span class="msg">Sign-in is unavailable because the sign-in library couldn't load. This is usually an ad blocker, a work network, or no internet connection. The tracker still works and saves in this browser.</span>`;
+    return;
+  }
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   document.getElementById("account").hidden = false;
   renderAccount();
