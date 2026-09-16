@@ -134,6 +134,9 @@
   .swap button { font-size: .8rem; font-weight: 500; padding: 4px 8px; border-width: 1px; text-align: left; }
   .swap button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
   .swap b { display: block; font-weight: 700; }
+  .account { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 0 0 18px; font-size: .9rem; }
+  .account input { font: inherit; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); min-width: 0; flex: 1 1 200px; max-width: 280px; }
+  .account .msg { flex-basis: 100%; color: var(--muted); font-size: .85rem; }
   .sync { font-size: .85rem; color: var(--muted); margin: -14px 0 20px; }
   .sync::before { content: "● "; color: var(--muted); }
   .sync.ok::before { color: #2E8B57; }
@@ -177,6 +180,7 @@
 <div class="wrap">
   <h1>Grocery run estimator</h1>
   <p class="intro">Tap the items you need and the total builds at the bottom. Prices marked "Est." are rough guesses, so type in the real price after your next trip. Tap a store label to switch where you buy an item. Each item remembers its price at every store you set.</p>
+  <div class="account" id="account" hidden></div>
   <p class="sync" id="sync">Saved in this browser</p>
   <div class="filters" id="filters"></div>
   <div class="tools">
@@ -476,7 +480,9 @@ let trips = [];
 let tripsRef = null;
 let logOpen = false;
 try { trips = JSON.parse(localStorage.getItem(TKEY)) || []; } catch (e) {}
-const saveTripsLocal = () => { try { localStorage.setItem(TKEY, JSON.stringify(trips)); } catch (e) {} };
+const tripKey = () => (typeof sbUser !== "undefined" && sbUser) ? `${TKEY}:${sbUser.id}` : TKEY;
+const saveTripsLocal = () => { try { localStorage.setItem(tripKey(), JSON.stringify(trips)); } catch (e) {} };
+const loadTripsLocal = () => { try { return JSON.parse(localStorage.getItem(tripKey())) || []; } catch (e) { return []; } };
 const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
 const spent = t => t.actualTotal != null ? t.actualTotal : t.estTotal;
 
@@ -516,7 +522,11 @@ function renderLog() {
     });
     trips = trips.concat(newTrips);
     saveTripsLocal();
-    if (tripsRef) for (const t of newTrips) { try { await tripsRef.doc(t.id).set(t); } catch (e) {} }
+    if (tripsRef) {
+      let failed = 0;
+      for (const t of newTrips) { try { await tripsRef.doc(t.id).set(t); } catch (e) { failed++; } }
+      if (failed) setSync("Trip saved on this device, but couldn't reach your account. Try again later.", false);
+    }
     logOpen = false;
     if (document.getElementById("tripClear").checked) {
       items.forEach(i => { i.on = false; i.qty = DEFAULTS.find(d => d.id === i.id)?.qty || 1; });
@@ -598,7 +608,7 @@ function renderTrips() {
     const id = b.dataset.deltrip;
     trips = trips.filter(t => t.id !== id);
     saveTripsLocal(); renderTrips();
-    if (tripsRef) { try { await tripsRef.doc(id).delete(); } catch (e) {} }
+    if (tripsRef) { try { await tripsRef.doc(id).delete(); } catch (e) { setSync("Couldn't delete that trip from your account", false); } }
   });
   setupExport();
 }
@@ -635,7 +645,7 @@ async function setupExport() {
 // ---- Demo data for the self-hosted version (never shown inside Claude) ----
 const STANDALONE = !(window.claude && window.claude.use);
 function sampleButtons() {
-  if (!STANDALONE) return "";
+  if (!STANDALONE || sbUser) return "";
   return trips.some(t => t.sample)
     ? `<button id="clearSample">Clear sample trips</button>`
     : `<button class="primary" id="loadSample">Load sample trips</button>`;
@@ -690,11 +700,164 @@ async function connectTrips(db) {
 }
 document.getElementById("logBtn").onclick = openLog;
 // Outside Claude, data lives only in this browser: show green if storage works, a warning if it doesn't.
-if (STANDALONE) {
+function showLocalStatus() {
   let ok = false;
   try { localStorage.setItem("__t", "1"); localStorage.removeItem("__t"); ok = true; } catch (e) {}
-  setSync(ok ? "Saved in this browser" : "Not saved: this browser is blocking storage, so changes will be lost when you close the page", ok);
+  setSync(ok ? "Saved in this browser only" : "Not saved: this browser is blocking storage, so changes will be lost when you close the page", ok);
 }
+
+// ---- Supabase: sign-in and database sync for the self-hosted site ----
+const SUPABASE_URL = "https://trsyopyfzkujrikplcan.supabase.co";
+const SUPABASE_KEY = "sb_publishable_nzus-UUnhiHyaHJnj9n9Qw_SA-03zLH"; // public by design; row level security protects the data
+const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js";
+var sb = null, sbUser = null;
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const el = document.createElement("script");
+    el.src = src; el.onload = res; el.onerror = rej;
+    document.head.appendChild(el);
+  });
+}
+
+async function initSupabase() {
+  try { await loadScript(SUPABASE_JS); } catch (e) { return; } // offline: stay in local mode
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  document.getElementById("account").hidden = false;
+  renderAccount();
+  // Fires on page load (INITIAL_SESSION), after a magic link (SIGNED_IN), and on sign-out.
+  sb.auth.onAuthStateChange((event, session) => {
+    const next = session ? session.user : null;
+    if ((next && next.id) === (sbUser && sbUser.id)) return;
+    setTimeout(() => (next ? onSignedIn(next) : onSignedOut()), 0); // don't call Supabase inside this callback
+  });
+  // Pick up changes made on another device when you come back to this tab.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && sbUser) pullFromAccount();
+  });
+}
+
+function renderAccount(msg = "") {
+  const el = document.getElementById("account");
+  if (sbUser) {
+    el.innerHTML = `<span>Signed in as <b>${esc(sbUser.email)}</b></span><button id="signOut">Sign out</button>`;
+    document.getElementById("signOut").onclick = () => sb.auth.signOut();
+  } else {
+    el.innerHTML = `<input id="email" type="email" autocomplete="email" placeholder="Email to sync across devices">
+      <button class="primary" id="sendLink">Email me a sign-in link</button>${msg ? `<span class="msg">${msg}</span>` : ""}`;
+    document.getElementById("sendLink").onclick = sendLink;
+  }
+}
+
+async function sendLink() {
+  const email = document.getElementById("email").value.trim();
+  if (!email) return document.getElementById("email").focus();
+  const btn = document.getElementById("sendLink");
+  btn.disabled = true; btn.textContent = "Sending…";
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: location.origin + location.pathname },
+  });
+  renderAccount(error
+    ? `Couldn't send the link: ${esc(error.message)}`
+    : `Check ${esc(email)} for a sign-in link. Open it on this device.`);
+}
+
+// Database adapters shaped like the ones the Claude version uses, so the rest of the app doesn't change.
+const stateBackend = {
+  async set(body) {
+    const { error } = await sb.from("user_state").upsert({
+      user_id: sbUser.id, state: body, updated_at: new Date().toISOString(),
+    });
+    if (error) throw error;
+  },
+};
+const tripsBackend = {
+  doc: id => ({
+    async set(t) {
+      const { error } = await sb.from("trips").insert({
+        id: t.id, date: t.date, store: t.store, item_count: t.itemCount,
+        est_total: t.estTotal, actual_total: t.actualTotal,
+      });
+      if (error) throw error;
+      const { error: e2 } = await sb.from("trip_lines").insert(t.lines.map(l => ({
+        trip_id: t.id, item_id: l.itemId, item_name: l.name, category: l.category, qty: l.qty,
+        unit_price: l.unitPrice, price_per_lb: l.perLb, lbs: l.lb,
+        price_is_estimate: l.priceIsEstimate, line_total: l.lineTotal,
+      })));
+      if (e2) { await sb.from("trips").delete().eq("id", t.id); throw e2; } // don't leave a trip with no items
+    },
+    async delete() {
+      const { error } = await sb.from("trips").delete().eq("id", id); // line items go too (on delete cascade)
+      if (error) throw error;
+    },
+  }),
+};
+
+async function fetchTrips() {
+  const { data, error } = await sb.from("trips")
+    .select("id, date, store, item_count, est_total, actual_total, created_at, trip_lines(item_id, item_name, category, qty, unit_price, price_per_lb, lbs, price_is_estimate, line_total)")
+    .order("date");
+  if (error) throw error;
+  return data.map(r => ({
+    id: r.id, date: r.date, store: r.store, itemCount: r.item_count,
+    estTotal: Number(r.est_total), actualTotal: r.actual_total == null ? null : Number(r.actual_total),
+    createdAt: Date.parse(r.created_at),
+    lines: r.trip_lines.map(l => ({
+      itemId: l.item_id, name: l.item_name, category: l.category, qty: l.qty,
+      unitPrice: Number(l.unit_price), perLb: l.price_per_lb == null ? null : Number(l.price_per_lb),
+      lb: l.lbs == null ? null : Number(l.lbs), priceIsEstimate: l.price_is_estimate, lineTotal: Number(l.line_total),
+    })),
+  }));
+}
+
+async function onSignedIn(user) {
+  const localTrips = trips.filter(t => !t.sample); // real trips logged before signing in
+  sbUser = user;
+  renderAccount();
+  setSync("Connecting to your account…", false);
+  try {
+    // Item list: keep whichever copy changed most recently
+    const { data, error } = await sb.from("user_state").select("state").maybeSingle();
+    if (error) throw error;
+    cloud = stateBackend;
+    if (data && (data.state.updatedAt || 0) >= (state.updatedAt || 0)) adopt(data.state);
+    else await pushCloud();
+
+    // Trips: upload any real ones logged while signed out, then load everything from the database
+    tripsRef = tripsBackend;
+    const remote = await fetchTrips();
+    const known = new Set(remote.map(t => t.id));
+    for (const t of localTrips) if (!known.has(t.id)) { try { await tripsBackend.doc(t.id).set(t); } catch (e) {} }
+    trips = localTrips.some(t => !known.has(t.id)) ? await fetchTrips() : remote;
+    saveTripsLocal();
+    renderTrips();
+    setSync("Synced to your account", true);
+  } catch (e) {
+    setSync("Signed in, but couldn't reach the database. Changes are saved on this device.", false);
+  }
+}
+
+async function pullFromAccount() {
+  if (pending) return; // a local change is still being saved
+  try {
+    const { data } = await sb.from("user_state").select("state").maybeSingle();
+    if (data && (data.state.updatedAt || 0) > (state.updatedAt || 0)) adopt(data.state);
+    trips = await fetchTrips();
+    saveTripsLocal();
+    renderTrips();
+    setSync("Synced to your account", true);
+  } catch (e) {}
+}
+
+function onSignedOut() {
+  sbUser = null; cloud = null; tripsRef = null;
+  trips = loadTripsLocal(); // back to this browser's own (demo) history
+  renderAccount();
+  renderTrips();
+  showLocalStatus();
+}
+if (STANDALONE) { showLocalStatus(); initSupabase(); }
 renderTrips();
 
 function adopt(remote) {

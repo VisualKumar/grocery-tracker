@@ -39,7 +39,10 @@ Line-item export adds `item_id`, `item_name`, `category`, `qty`, `unit_price`, `
 
 ## Tech
 
-A single HTML file with vanilla JavaScript and CSS, no build step and no dependencies. Data is stored in the browser's localStorage, so each visitor has their own private copy. Charts are drawn as inline SVG.
+- **Front end:** a single HTML file with vanilla JavaScript and CSS, no build step. Charts are inline SVG. Hosted on GitHub Pages.
+- **Back end:** [Supabase](https://supabase.com) (Postgres) with magic-link email sign-in. Three tables: `user_state` (item list and prices as JSONB), `trips`, and `trip_lines`, linked by foreign keys with cascading deletes.
+- **Security:** row level security on every table, so a signed-in user can only read and write their own rows. The publishable key in the page is public by design.
+- **Offline and demo mode:** without signing in, everything is saved in the browser's localStorage, and visitors can load generated sample trips.
 
 Built with AI-assisted development (Claude).
 
