@@ -1,0 +1,245 @@
+trip_id,date,store,item_id,item_name,category,qty,unit_price,price_per_lb,lbs,price_is_estimate,line_total,is_sample
+s12Walmart,2026-06-23,Walmart,e1,Fiber gummies,Household,1,12.82,,,true,12.82,true
+s12Walmart,2026-06-23,Walmart,e4,Dish soap,Household,1,5.28,,,true,5.28,true
+s12Walmart,2026-06-23,Walmart,e5,Oat milk,Dairy,1,5.2,,,true,5.2,true
+s12Walmart,2026-06-23,Walmart,e6,Low-fat cream cheese,Dairy,1,3.03,,,true,3.03,true
+s12Walmart,2026-06-23,Walmart,e11,Green beans,Produce,1,2.58,,,true,2.58,true
+s12Walmart,2026-06-23,Walmart,e12,Green onions,Produce,1,1.01,,,true,1.01,true
+s12Walmart,2026-06-23,Walmart,e16,Asparagus,Produce,1,3.45,,,true,3.45,true
+s12Walmart,2026-06-23,Walmart,e17,Cuties (3 lb bag),Produce,1,5.45,,,true,5.45,true
+s12Walmart,2026-06-23,Walmart,e18,Bananas,Produce,1,1.57,,,true,1.57,true
+s12Walmart,2026-06-23,Walmart,e19,Cucumber,Produce,1,0.78,,,true,0.78,true
+s12Walmart,2026-06-23,Walmart,e20,Brussels sprouts,Produce,1,3.06,,,true,3.06,true
+s12Walmart,2026-06-23,Walmart,e25,Corn,Produce,1,1.99,,,true,1.99,true
+s12Walmart,2026-06-23,Walmart,e27,Chicken tenders or nuggets,Frozen,1,9.55,,,true,9.55,true
+s12Walmart,2026-06-23,Walmart,e32,Instant coffee,Pantry staples,1,8.09,,,true,8.09,true
+s12Walmart,2026-06-23,Walmart,e33,Canned pineapple or pineapple juice,Pantry staples,1,1.62,,,true,1.62,true
+s12Walmart,2026-06-23,Walmart,e34,Vegan refried beans,Pantry staples,1,1.98,,,true,1.98,true
+s12Costco,2026-06-24,Costco,870735,Kirkland adult multivitamin,Household,1,12.05,,,false,12.05,true
+s12Costco,2026-06-24,Costco,1048072,Kirkland low-fat Greek yogurt tub,Dairy,1,7.22,,,false,7.22,true
+s12Costco,2026-06-24,Costco,1068083,Organic free-range eggs,Dairy,1,7.92,,,false,7.92,true
+s12Costco,2026-06-24,Costco,18010,Lamb rib rack (lamb chops),Proteins,1,29.61,16.99,1.8,false,29.61,true
+s12Costco,2026-06-24,Costco,22967,Organic boneless skinless chicken thighs,Proteins,2,30.8,5.99,5,false,61.61,true
+s12Costco,2026-06-24,Costco,96716,Organic spinach,Produce,1,4.68,,,false,4.68,true
+s12Costco,2026-06-24,Costco,21020,Tomatoes on the vine,Produce,1,7.35,,,false,7.35,true
+s12Costco,2026-06-24,Costco,1285362,Kirkland guacamole single cups,Produce,1,14.07,,,false,14.07,true
+s12Costco,2026-06-24,Costco,669434,Cape Cod reduced fat chips,Carbs,1,7.6,,,false,7.6,true
+s11Walmart,2026-06-30,Walmart,e2,Candles,Household,1,5.02,,,true,5.02,true
+s11Walmart,2026-06-30,Walmart,e4,Dish soap,Household,1,4.91,,,true,4.91,true
+s11Walmart,2026-06-30,Walmart,e8,Cottage cheese,Dairy,1,3.98,,,true,3.98,true
+s11Walmart,2026-06-30,Walmart,e13,Lettuce,Produce,1,2.91,,,true,2.91,true
+s11Walmart,2026-06-30,Walmart,e20,Brussels sprouts,Produce,1,2.96,,,true,2.96,true
+s11Walmart,2026-06-30,Walmart,e21,Limes,Produce,1,3.08,,,true,3.08,true
+s11Walmart,2026-06-30,Walmart,e22,Avocados (bag),Produce,1,4.23,,,true,4.23,true
+s11Walmart,2026-06-30,Walmart,e23,Red onions,Produce,1,2.83,,,true,2.83,true
+s11Walmart,2026-06-30,Walmart,e26,Asian pear,Produce,1,1.51,,,true,1.51,true
+s11Walmart,2026-06-30,Walmart,e29,Pickles,Pantry staples,1,3.12,,,true,3.12,true
+s11Walmart,2026-06-30,Walmart,e31,Jalapeños,Pantry staples,1,2,,,true,2,true
+s11Walmart,2026-06-30,Walmart,e32,Instant coffee,Pantry staples,1,7.71,,,true,7.71,true
+s11Walmart,2026-06-30,Walmart,e34,Vegan refried beans,Pantry staples,1,1.97,,,true,1.97,true
+s10Walmart,2026-07-07,Walmart,e2,Candles,Household,1,4.83,,,true,4.83,true
+s10Walmart,2026-07-07,Walmart,e3,Sponges,Household,1,6.21,,,true,6.21,true
+s10Walmart,2026-07-07,Walmart,e5,Oat milk,Dairy,1,4.98,,,true,4.98,true
+s10Walmart,2026-07-07,Walmart,e6,Low-fat cream cheese,Dairy,1,2.83,,,true,2.83,true
+s10Walmart,2026-07-07,Walmart,e7,Low-fat sour cream,Dairy,1,2.46,,,true,2.46,true
+s10Walmart,2026-07-07,Walmart,e8,Cottage cheese,Dairy,1,4.04,,,true,4.04,true
+s10Walmart,2026-07-07,Walmart,e11,Green beans,Produce,1,2.41,,,true,2.41,true
+s10Walmart,2026-07-07,Walmart,e12,Green onions,Produce,1,1.04,,,true,1.04,true
+s10Walmart,2026-07-07,Walmart,e14,Salsa,Produce,1,3.68,,,true,3.68,true
+s10Walmart,2026-07-07,Walmart,e18,Bananas,Produce,1,1.71,,,true,1.71,true
+s10Walmart,2026-07-07,Walmart,e19,Cucumber,Produce,1,0.82,,,true,0.82,true
+s10Walmart,2026-07-07,Walmart,e20,Brussels sprouts,Produce,1,2.91,,,true,2.91,true
+s10Walmart,2026-07-07,Walmart,e21,Limes,Produce,1,3.01,,,true,3.01,true
+s10Walmart,2026-07-07,Walmart,e22,Avocados (bag),Produce,1,3.87,,,true,3.87,true
+s10Walmart,2026-07-07,Walmart,e28,Fries,Frozen,1,5.25,,,true,5.25,true
+s10Walmart,2026-07-07,Walmart,e29,Pickles,Pantry staples,1,3.12,,,true,3.12,true
+s10Walmart,2026-07-07,Walmart,e30,Yellow chili peppers,Pantry staples,1,2.64,,,true,2.64,true
+s10Walmart,2026-07-07,Walmart,e31,Jalapeños,Pantry staples,1,1.96,,,true,1.96,true
+s10Walmart,2026-07-07,Walmart,e32,Instant coffee,Pantry staples,1,8.19,,,true,8.19,true
+s10Walmart,2026-07-07,Walmart,e33,Canned pineapple or pineapple juice,Pantry staples,1,1.73,,,true,1.73,true
+s10Walmart,2026-07-07,Walmart,e34,Vegan refried beans,Pantry staples,1,2.09,,,true,2.09,true
+s10Costco,2026-07-08,Costco,427381,Kirkland organic eggs,Dairy,1,8.04,,,false,8.04,true
+s10Costco,2026-07-08,Costco,1068083,Organic free-range eggs,Dairy,1,8.53,,,false,8.53,true
+s10Costco,2026-07-08,Costco,26802,Crumbled feta,Dairy,1,7.23,,,false,7.23,true
+s10Costco,2026-07-08,Costco,e9,Boneless skinless chicken breast,Proteins,1,21.17,3.49,6,true,21.17,true
+s10Costco,2026-07-08,Costco,221177,"Kirkland wild sockeye salmon, frozen bag",Proteins,1,43.3,,,false,43.3,true
+s10Costco,2026-07-08,Costco,96716,Organic spinach,Produce,1,4.51,,,false,4.51,true
+s10Costco,2026-07-08,Costco,60357,"Bell peppers, 6-pack",Produce,1,7.29,,,false,7.29,true
+s10Costco,2026-07-08,Costco,21020,Tomatoes on the vine,Produce,1,7.27,,,false,7.27,true
+s10Costco,2026-07-08,Costco,96128,Martin's potato bread,Carbs,1,7.03,,,false,7.03,true
+s9Walmart,2026-07-14,Walmart,e1,Fiber gummies,Household,1,12.07,,,true,12.07,true
+s9Walmart,2026-07-14,Walmart,e2,Candles,Household,1,5.14,,,true,5.14,true
+s9Walmart,2026-07-14,Walmart,e3,Sponges,Household,1,6.31,,,true,6.31,true
+s9Walmart,2026-07-14,Walmart,e8,Cottage cheese,Dairy,1,3.94,,,true,3.94,true
+s9Walmart,2026-07-14,Walmart,e12,Green onions,Produce,1,1.04,,,true,1.04,true
+s9Walmart,2026-07-14,Walmart,e14,Salsa,Produce,1,3.7,,,true,3.7,true
+s9Walmart,2026-07-14,Walmart,e15,Broccoli,Produce,1,2.49,,,true,2.49,true
+s9Walmart,2026-07-14,Walmart,e20,Brussels sprouts,Produce,1,3,,,true,3,true
+s9Walmart,2026-07-14,Walmart,e22,Avocados (bag),Produce,1,4.2,,,true,4.2,true
+s9Walmart,2026-07-14,Walmart,e24,Potatoes (5 lb bag),Produce,1,3.79,,,true,3.79,true
+s9Walmart,2026-07-14,Walmart,e25,Corn,Produce,1,1.91,,,true,1.91,true
+s9Walmart,2026-07-14,Walmart,e30,Yellow chili peppers,Pantry staples,1,2.49,,,true,2.49,true
+s9Walmart,2026-07-14,Walmart,e32,Instant coffee,Pantry staples,1,8.11,,,true,8.11,true
+s9Walmart,2026-07-14,Walmart,e34,Vegan refried beans,Pantry staples,1,1.97,,,true,1.97,true
+s8Walmart,2026-07-21,Walmart,e4,Dish soap,Household,1,4.99,,,true,4.99,true
+s8Walmart,2026-07-21,Walmart,e8,Cottage cheese,Dairy,1,4.16,,,true,4.16,true
+s8Walmart,2026-07-21,Walmart,e10,"Ground turkey, 99% lean (1 lb)",Proteins,1,7.16,,,true,7.16,true
+s8Walmart,2026-07-21,Walmart,e11,Green beans,Produce,1,2.5,,,true,2.5,true
+s8Walmart,2026-07-21,Walmart,e14,Salsa,Produce,1,3.64,,,true,3.64,true
+s8Walmart,2026-07-21,Walmart,e15,Broccoli,Produce,1,2.59,,,true,2.59,true
+s8Walmart,2026-07-21,Walmart,e18,Bananas,Produce,1,1.57,,,true,1.57,true
+s8Walmart,2026-07-21,Walmart,e19,Cucumber,Produce,1,0.76,,,true,0.76,true
+s8Walmart,2026-07-21,Walmart,e20,Brussels sprouts,Produce,1,3.06,,,true,3.06,true
+s8Walmart,2026-07-21,Walmart,e26,Asian pear,Produce,1,1.47,,,true,1.47,true
+s8Walmart,2026-07-21,Walmart,e28,Fries,Frozen,1,4.96,,,true,4.96,true
+s8Walmart,2026-07-21,Walmart,e29,Pickles,Pantry staples,1,2.91,,,true,2.91,true
+s8Walmart,2026-07-21,Walmart,e30,Yellow chili peppers,Pantry staples,1,2.54,,,true,2.54,true
+s8Walmart,2026-07-21,Walmart,e31,Jalapeños,Pantry staples,1,1.9,,,true,1.9,true
+s8Walmart,2026-07-21,Walmart,e34,Vegan refried beans,Pantry staples,1,2.02,,,true,2.02,true
+s8Costco,2026-07-22,Costco,870735,Kirkland adult multivitamin,Household,1,11.31,,,false,11.31,true
+s8Costco,2026-07-22,Costco,1271446,Oikos zero-sugar Greek yogurt cups,Dairy,1,14.47,,,false,14.47,true
+s8Costco,2026-07-22,Costco,427381,Kirkland organic eggs,Dairy,1,7.8,,,false,7.8,true
+s8Costco,2026-07-22,Costco,26802,Crumbled feta,Dairy,1,6.51,,,false,6.51,true
+s8Costco,2026-07-22,Costco,18010,Lamb rib rack (lamb chops),Proteins,1,31.69,16.99,1.8,false,31.69,true
+s8Costco,2026-07-22,Costco,e9,Boneless skinless chicken breast,Proteins,1,21.84,3.49,6,true,21.84,true
+s8Costco,2026-07-22,Costco,96716,Organic spinach,Produce,1,4.52,,,false,4.52,true
+s8Costco,2026-07-22,Costco,21020,Tomatoes on the vine,Produce,1,7.91,,,false,7.91,true
+s8Costco,2026-07-22,Costco,1285362,Kirkland guacamole single cups,Produce,1,14.14,,,false,14.14,true
+s8Costco,2026-07-22,Costco,96128,Martin's potato bread,Carbs,1,6.98,,,false,6.98,true
+s8Costco,2026-07-22,Costco,669434,Cape Cod reduced fat chips,Carbs,1,7.82,,,false,7.82,true
+s8Costco,2026-07-22,Costco,1407686,Mission low-carb soft taco tortillas (70 cal each),Carbs,1,7.48,,,false,7.48,true
+s7Walmart,2026-07-28,Walmart,e2,Candles,Household,1,5.03,,,true,5.03,true
+s7Walmart,2026-07-28,Walmart,e5,Oat milk,Dairy,1,4.82,,,true,4.82,true
+s7Walmart,2026-07-28,Walmart,e6,Low-fat cream cheese,Dairy,1,2.88,,,true,2.88,true
+s7Walmart,2026-07-28,Walmart,e10,"Ground turkey, 99% lean (1 lb)",Proteins,1,6.9,,,true,6.9,true
+s7Walmart,2026-07-28,Walmart,e12,Green onions,Produce,1,1.04,,,true,1.04,true
+s7Walmart,2026-07-28,Walmart,e15,Broccoli,Produce,1,2.57,,,true,2.57,true
+s7Walmart,2026-07-28,Walmart,e19,Cucumber,Produce,1,0.81,,,true,0.81,true
+s7Walmart,2026-07-28,Walmart,e20,Brussels sprouts,Produce,1,3.09,,,true,3.09,true
+s7Walmart,2026-07-28,Walmart,e21,Limes,Produce,1,2.95,,,true,2.95,true
+s7Walmart,2026-07-28,Walmart,e22,Avocados (bag),Produce,1,4,,,true,4,true
+s7Walmart,2026-07-28,Walmart,e23,Red onions,Produce,1,3.03,,,true,3.03,true
+s7Walmart,2026-07-28,Walmart,e29,Pickles,Pantry staples,1,3.06,,,true,3.06,true
+s7Walmart,2026-07-28,Walmart,e32,Instant coffee,Pantry staples,1,7.8,,,true,7.8,true
+s7Walmart,2026-07-28,Walmart,e34,Vegan refried beans,Pantry staples,1,2.05,,,true,2.05,true
+s6Walmart,2026-08-04,Walmart,e1,Fiber gummies,Household,1,12.45,,,true,12.45,true
+s6Walmart,2026-08-04,Walmart,e2,Candles,Household,1,5,,,true,5,true
+s6Walmart,2026-08-04,Walmart,e4,Dish soap,Household,1,5.01,,,true,5.01,true
+s6Walmart,2026-08-04,Walmart,e8,Cottage cheese,Dairy,1,3.84,,,true,3.84,true
+s6Walmart,2026-08-04,Walmart,e10,"Ground turkey, 99% lean (1 lb)",Proteins,1,6.69,,,true,6.69,true
+s6Walmart,2026-08-04,Walmart,e11,Green beans,Produce,1,2.41,,,true,2.41,true
+s6Walmart,2026-08-04,Walmart,e16,Asparagus,Produce,1,3.65,,,true,3.65,true
+s6Walmart,2026-08-04,Walmart,e17,Cuties (3 lb bag),Produce,1,5.7,,,true,5.7,true
+s6Walmart,2026-08-04,Walmart,e18,Bananas,Produce,1,1.58,,,true,1.58,true
+s6Walmart,2026-08-04,Walmart,e19,Cucumber,Produce,1,0.74,,,true,0.74,true
+s6Walmart,2026-08-04,Walmart,e24,Potatoes (5 lb bag),Produce,1,3.79,,,true,3.79,true
+s6Walmart,2026-08-04,Walmart,e27,Chicken tenders or nuggets,Frozen,1,9.75,,,true,9.75,true
+s6Walmart,2026-08-04,Walmart,e28,Fries,Frozen,1,4.89,,,true,4.89,true
+s6Walmart,2026-08-04,Walmart,e29,Pickles,Pantry staples,1,3.04,,,true,3.04,true
+s6Walmart,2026-08-04,Walmart,e32,Instant coffee,Pantry staples,1,8.46,,,true,8.46,true
+s6Walmart,2026-08-04,Walmart,e33,Canned pineapple or pineapple juice,Pantry staples,1,1.67,,,true,1.67,true
+s6Costco,2026-08-05,Costco,1048072,Kirkland low-fat Greek yogurt tub,Dairy,1,7.33,,,false,7.33,true
+s6Costco,2026-08-05,Costco,427381,Kirkland organic eggs,Dairy,1,7.67,,,false,7.67,true
+s6Costco,2026-08-05,Costco,18010,Lamb rib rack (lamb chops),Proteins,1,32.75,16.99,1.8,false,32.75,true
+s6Costco,2026-08-05,Costco,e9,Boneless skinless chicken breast,Proteins,1,20.44,3.49,6,true,20.44,true
+s6Costco,2026-08-05,Costco,1139689,"Kirkland tilapia fillets, frozen bag",Proteins,1,21.23,,,false,21.23,true
+s6Costco,2026-08-05,Costco,96716,Organic spinach,Produce,1,4.96,,,false,4.96,true
+s6Costco,2026-08-05,Costco,1407686,Mission low-carb soft taco tortillas (70 cal each),Carbs,1,7.13,,,false,7.13,true
+s5Walmart,2026-08-11,Walmart,e1,Fiber gummies,Household,1,12.3,,,true,12.3,true
+s5Walmart,2026-08-11,Walmart,e3,Sponges,Household,1,6.25,,,true,6.25,true
+s5Walmart,2026-08-11,Walmart,e5,Oat milk,Dairy,1,5.05,,,true,5.05,true
+s5Walmart,2026-08-11,Walmart,e7,Low-fat sour cream,Dairy,1,2.55,,,true,2.55,true
+s5Walmart,2026-08-11,Walmart,e14,Salsa,Produce,1,3.43,,,true,3.43,true
+s5Walmart,2026-08-11,Walmart,e15,Broccoli,Produce,1,2.54,,,true,2.54,true
+s5Walmart,2026-08-11,Walmart,e16,Asparagus,Produce,1,3.47,,,true,3.47,true
+s5Walmart,2026-08-11,Walmart,e17,Cuties (3 lb bag),Produce,1,5.8,,,true,5.8,true
+s5Walmart,2026-08-11,Walmart,e21,Limes,Produce,1,3.04,,,true,3.04,true
+s5Walmart,2026-08-11,Walmart,e22,Avocados (bag),Produce,1,3.99,,,true,3.99,true
+s5Walmart,2026-08-11,Walmart,e24,Potatoes (5 lb bag),Produce,1,4.17,,,true,4.17,true
+s5Walmart,2026-08-11,Walmart,e25,Corn,Produce,1,2.01,,,true,2.01,true
+s5Walmart,2026-08-11,Walmart,e27,Chicken tenders or nuggets,Frozen,1,10.65,,,true,10.65,true
+s5Walmart,2026-08-11,Walmart,e28,Fries,Frozen,1,4.88,,,true,4.88,true
+s5Walmart,2026-08-11,Walmart,e30,Yellow chili peppers,Pantry staples,1,2.56,,,true,2.56,true
+s5Walmart,2026-08-11,Walmart,e31,Jalapeños,Pantry staples,1,1.88,,,true,1.88,true
+s5Walmart,2026-08-11,Walmart,e34,Vegan refried beans,Pantry staples,1,2.07,,,true,2.07,true
+s4Walmart,2026-08-18,Walmart,e2,Candles,Household,1,5.24,,,true,5.24,true
+s4Walmart,2026-08-18,Walmart,e3,Sponges,Household,1,6.22,,,true,6.22,true
+s4Walmart,2026-08-18,Walmart,e4,Dish soap,Household,1,5.31,,,true,5.31,true
+s4Walmart,2026-08-18,Walmart,e7,Low-fat sour cream,Dairy,1,2.42,,,true,2.42,true
+s4Walmart,2026-08-18,Walmart,e10,"Ground turkey, 99% lean (1 lb)",Proteins,1,7.15,,,true,7.15,true
+s4Walmart,2026-08-18,Walmart,e13,Lettuce,Produce,1,3.13,,,true,3.13,true
+s4Walmart,2026-08-18,Walmart,e16,Asparagus,Produce,1,3.36,,,true,3.36,true
+s4Walmart,2026-08-18,Walmart,e20,Brussels sprouts,Produce,1,2.97,,,true,2.97,true
+s4Walmart,2026-08-18,Walmart,e22,Avocados (bag),Produce,1,3.94,,,true,3.94,true
+s4Walmart,2026-08-18,Walmart,e28,Fries,Frozen,1,4.9,,,true,4.9,true
+s4Walmart,2026-08-18,Walmart,e29,Pickles,Pantry staples,1,2.98,,,true,2.98,true
+s4Walmart,2026-08-18,Walmart,e32,Instant coffee,Pantry staples,1,7.79,,,true,7.79,true
+s4Walmart,2026-08-18,Walmart,e33,Canned pineapple or pineapple juice,Pantry staples,1,1.72,,,true,1.72,true
+s4Costco,2026-08-19,Costco,1048072,Kirkland low-fat Greek yogurt tub,Dairy,1,7.83,,,false,7.83,true
+s4Costco,2026-08-19,Costco,1271446,Oikos zero-sugar Greek yogurt cups,Dairy,1,14,,,false,14,true
+s4Costco,2026-08-19,Costco,26802,Crumbled feta,Dairy,1,6.98,,,false,6.98,true
+s4Costco,2026-08-19,Costco,18010,Lamb rib rack (lamb chops),Proteins,1,29.61,16.99,1.8,false,29.61,true
+s4Costco,2026-08-19,Costco,e9,Boneless skinless chicken breast,Proteins,1,20.38,3.49,6,true,20.38,true
+s4Costco,2026-08-19,Costco,221177,"Kirkland wild sockeye salmon, frozen bag",Proteins,1,45.66,,,false,45.66,true
+s4Costco,2026-08-19,Costco,1139689,"Kirkland tilapia fillets, frozen bag",Proteins,1,21.09,,,false,21.09,true
+s4Costco,2026-08-19,Costco,96716,Organic spinach,Produce,1,4.94,,,false,4.94,true
+s4Costco,2026-08-19,Costco,60357,"Bell peppers, 6-pack",Produce,1,7.05,,,false,7.05,true
+s4Costco,2026-08-19,Costco,1285362,Kirkland guacamole single cups,Produce,1,14.27,,,false,14.27,true
+s4Costco,2026-08-19,Costco,96128,Martin's potato bread,Carbs,1,6.91,,,false,6.91,true
+s4Costco,2026-08-19,Costco,669434,Cape Cod reduced fat chips,Carbs,1,7.79,,,false,7.79,true
+s4Costco,2026-08-19,Costco,1407686,Mission low-carb soft taco tortillas (70 cal each),Carbs,1,6.81,,,false,6.81,true
+s3Walmart,2026-08-25,Walmart,e3,Sponges,Household,1,6,,,true,6,true
+s3Walmart,2026-08-25,Walmart,e4,Dish soap,Household,1,5.33,,,true,5.33,true
+s3Walmart,2026-08-25,Walmart,e6,Low-fat cream cheese,Dairy,1,2.94,,,true,2.94,true
+s3Walmart,2026-08-25,Walmart,e14,Salsa,Produce,1,3.57,,,true,3.57,true
+s3Walmart,2026-08-25,Walmart,e15,Broccoli,Produce,1,2.6,,,true,2.6,true
+s3Walmart,2026-08-25,Walmart,e18,Bananas,Produce,1,1.63,,,true,1.63,true
+s3Walmart,2026-08-25,Walmart,e19,Cucumber,Produce,1,0.82,,,true,0.82,true
+s3Walmart,2026-08-25,Walmart,e22,Avocados (bag),Produce,1,4.14,,,true,4.14,true
+s3Walmart,2026-08-25,Walmart,e28,Fries,Frozen,1,5.05,,,true,5.05,true
+s3Walmart,2026-08-25,Walmart,e30,Yellow chili peppers,Pantry staples,1,2.38,,,true,2.38,true
+s3Walmart,2026-08-25,Walmart,e32,Instant coffee,Pantry staples,1,8.5,,,true,8.5,true
+s3Walmart,2026-08-25,Walmart,e33,Canned pineapple or pineapple juice,Pantry staples,1,1.68,,,true,1.68,true
+s2Walmart,2026-09-01,Walmart,e2,Candles,Household,1,5.31,,,true,5.31,true
+s2Walmart,2026-09-01,Walmart,e3,Sponges,Household,1,6.18,,,true,6.18,true
+s2Walmart,2026-09-01,Walmart,e4,Dish soap,Household,1,4.92,,,true,4.92,true
+s2Walmart,2026-09-01,Walmart,e8,Cottage cheese,Dairy,1,4.24,,,true,4.24,true
+s2Walmart,2026-09-01,Walmart,e10,"Ground turkey, 99% lean (1 lb)",Proteins,1,7.15,,,true,7.15,true
+s2Walmart,2026-09-01,Walmart,e11,Green beans,Produce,1,2.36,,,true,2.36,true
+s2Walmart,2026-09-01,Walmart,e13,Lettuce,Produce,1,2.87,,,true,2.87,true
+s2Walmart,2026-09-01,Walmart,e19,Cucumber,Produce,1,0.75,,,true,0.75,true
+s2Walmart,2026-09-01,Walmart,e21,Limes,Produce,1,2.83,,,true,2.83,true
+s2Walmart,2026-09-01,Walmart,e27,Chicken tenders or nuggets,Frozen,1,10.66,,,true,10.66,true
+s2Walmart,2026-09-01,Walmart,e29,Pickles,Pantry staples,1,2.92,,,true,2.92,true
+s2Walmart,2026-09-01,Walmart,e31,Jalapeños,Pantry staples,1,2.06,,,true,2.06,true
+s2Walmart,2026-09-01,Walmart,e32,Instant coffee,Pantry staples,1,8.42,,,true,8.42,true
+s2Costco,2026-09-02,Costco,870735,Kirkland adult multivitamin,Household,1,11.01,,,false,11.01,true
+s2Costco,2026-09-02,Costco,1048072,Kirkland low-fat Greek yogurt tub,Dairy,1,7.85,,,false,7.85,true
+s2Costco,2026-09-02,Costco,1068083,Organic free-range eggs,Dairy,1,7.9,,,false,7.9,true
+s2Costco,2026-09-02,Costco,26802,Crumbled feta,Dairy,1,7.06,,,false,7.06,true
+s2Costco,2026-09-02,Costco,1139689,"Kirkland tilapia fillets, frozen bag",Proteins,1,20.31,,,false,20.31,true
+s2Costco,2026-09-02,Costco,96716,Organic spinach,Produce,1,4.66,,,false,4.66,true
+s2Costco,2026-09-02,Costco,60357,"Bell peppers, 6-pack",Produce,1,6.73,,,false,6.73,true
+s2Costco,2026-09-02,Costco,21020,Tomatoes on the vine,Produce,1,7.78,,,false,7.78,true
+s2Costco,2026-09-02,Costco,1285362,Kirkland guacamole single cups,Produce,1,13.77,,,false,13.77,true
+s2Costco,2026-09-02,Costco,96128,Martin's potato bread,Carbs,1,6.7,,,false,6.7,true
+s2Costco,2026-09-02,Costco,669434,Cape Cod reduced fat chips,Carbs,1,7.96,,,false,7.96,true
+s1Walmart,2026-09-08,Walmart,e2,Candles,Household,1,4.78,,,true,4.78,true
+s1Walmart,2026-09-08,Walmart,e4,Dish soap,Household,1,5.2,,,true,5.2,true
+s1Walmart,2026-09-08,Walmart,e5,Oat milk,Dairy,1,5.07,,,true,5.07,true
+s1Walmart,2026-09-08,Walmart,e6,Low-fat cream cheese,Dairy,1,2.96,,,true,2.96,true
+s1Walmart,2026-09-08,Walmart,e8,Cottage cheese,Dairy,1,3.88,,,true,3.88,true
+s1Walmart,2026-09-08,Walmart,e10,"Ground turkey, 99% lean (1 lb)",Proteins,1,6.89,,,true,6.89,true
+s1Walmart,2026-09-08,Walmart,e12,Green onions,Produce,1,1,,,true,1,true
+s1Walmart,2026-09-08,Walmart,e13,Lettuce,Produce,1,2.85,,,true,2.85,true
+s1Walmart,2026-09-08,Walmart,e14,Salsa,Produce,1,3.6,,,true,3.6,true
+s1Walmart,2026-09-08,Walmart,e15,Broccoli,Produce,1,2.35,,,true,2.35,true
+s1Walmart,2026-09-08,Walmart,e16,Asparagus,Produce,1,3.42,,,true,3.42,true
+s1Walmart,2026-09-08,Walmart,e17,Cuties (3 lb bag),Produce,1,5.32,,,true,5.32,true
+s1Walmart,2026-09-08,Walmart,e19,Cucumber,Produce,1,0.79,,,true,0.79,true
+s1Walmart,2026-09-08,Walmart,e21,Limes,Produce,1,3.01,,,true,3.01,true
+s1Walmart,2026-09-08,Walmart,e24,Potatoes (5 lb bag),Produce,1,3.94,,,true,3.94,true
+s1Walmart,2026-09-08,Walmart,e25,Corn,Produce,1,2.03,,,true,2.03,true
+s1Walmart,2026-09-08,Walmart,e27,Chicken tenders or nuggets,Frozen,1,9.71,,,true,9.71,true
+s1Walmart,2026-09-08,Walmart,e28,Fries,Frozen,1,4.85,,,true,4.85,true
+s1Walmart,2026-09-08,Walmart,e33,Canned pineapple or pineapple juice,Pantry staples,1,1.7,,,true,1.7,true
